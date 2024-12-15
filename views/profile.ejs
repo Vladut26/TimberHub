@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <link rel="stylesheet" href="/css/profile.css">
+    <script>
+        async function deletePost(postId) {
+            try {
+                const response = await fetch(`/delete/${postId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    console.log('Post deleted successfully');
+                    window.location.reload();
+                } else {
+                    console.error('Failed to delete post:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error deleting post:', error.message);
+            }
+        }
+
+        async function editPost(postId) {
+            try {
+                const response = await fetch(`/${postId}/edit`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    console.log('Post edited successfully');
+                } else {
+                    console.error('Failed to edit post:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error editing post:', error.message);
+            }
+        }
+
+        function togglePopup() {
+            const popup = document.querySelector('.popup-form');
+            const overlay = document.querySelector('.overlay');
+            popup.style.display = (popup.style.display === 'none' || popup.style.display === '') ? 'block' : 'none';
+            overlay.style.display = (overlay.style.display === 'none' || overlay.style.display === '') ? 'block' : 'none';
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Profile page of <%= username  %>!</h1>
+        <nav>
+            <a href="/<%= username %>">Home</a>
+            <button id="create-post" onclick="togglePopup()">Create Post</button>
+        </nav>
+    </header>
+
+    <div class="overlay" onclick="togglePopup()"></div>
+
+    <div class="popup-form">
+        <h2>Create new post</h2>
+        <form action="/<%= username  %>" method="post">
+            <section>
+                <label for="imgURL">Enter the image URL:</label>
+                <input type="text" name="imgURL" id="imgURL" placeholder="Upload image by URL">
+            </section>
+            <section>
+                <label for="description">Add the description:</label>
+                <textarea name="description" id="description" cols="30" rows="10" placeholder="Write here..."></textarea>
+            </section>
+            <button type="submit">Add post</button>
+            <button type="button" onclick="togglePopup()">Close</button>
+        </form>
+    </div>
+
+    <ul>
+        <% for(let p of posts) {%>
+        <li>
+            <button class="delete-button" onclick="deletePost('<%= p.PID %>')">Delete</button>
+            <a href="/<%= p.PID %>/edit" class="edit-link">Edit</a> 
+            <%=p.description%> - <span class="like-count"><%= p.likeNr  %> likes</span> <br>
+            <img src="<%= p.imgURL %>" alt="This is the post ID: <%=p.PID%>">
+        </li>
+        <% }%>
+    </ul>
+</body>
+</html>

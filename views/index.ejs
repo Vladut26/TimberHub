@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TimberHub</title>
+    <link rel="stylesheet" href="/css/index.css">
+</head>
+<body>
+    <header>
+        <h1>TimberHub</h1>
+        <nav>
+            <a href="/<%=username %>">Home</a>
+            <a href="/profile/<%=username  %>">Profile</a>
+            <button onclick="togglePopup()">New Post</button>
+        </nav>
+    </header>
+
+    <div class="overlay" onclick="togglePopup()"></div>
+
+    <div class="popup-form">
+        <h2>Create new post</h2>
+        <form action="/<%= username  %>" method="post">
+            <section>
+                <label for="imgURL">Enter the image URL:</label>
+                <input type="text" name="imgURL" id="imgURL" placeholder="Upload image by URL">
+                <!-- username-ul trebuie luat din query si nrlike=0 -->
+            </section>
+            <section>
+                <label for="description">Add the description:</label>
+                <textarea name="description" id="description" cols="30" rows="10" placeholder="Write here..."></textarea>
+            </section>
+            <button type="submit">Add post</button>
+        </form>
+    </div>
+
+    <ul>
+        <% for(let p of posts) {%>
+            <li>
+                <span class="username"><%= p.username %></span> 
+                <p class="description"><%=p.description%> - <%= p.likeNr %> likes</p>
+                <img src="<%= p.imgURL %>" alt="This is the post ID: <%=p.PID%>">
+            </li>
+        <% }%>
+    </ul>
+
+    <script>
+        function togglePopup() {
+            const popup = document.querySelector('.popup-form');
+            const overlay = document.querySelector('.overlay');
+            popup.style.display = (popup.style.display === 'none' || popup.style.display === '') ? 'block' : 'none';
+            overlay.style.display = (overlay.style.display === 'none' || overlay.style.display === '') ? 'block' : 'none';
+        }
+    </script>
+</body>
+</html>
